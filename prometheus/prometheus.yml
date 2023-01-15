@@ -3,4 +3,4 @@ scrape_configs:
     scrape_interval: 30s
     scrape_timeout: 20s
     static_configs:
-      - targets: ['172.21.0.2:8000', 'localhost:8001']
+      - targets: ['dice-api:8000']

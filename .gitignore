@@ -8,3 +8,5 @@ __pycache__/
 lib/
 
 bin/
+
+grafana_data/

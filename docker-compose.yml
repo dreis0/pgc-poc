@@ -1,14 +1,23 @@
 version: '2'
 
 services:
+  grafana:
+    image: grafana/grafana-oss:latest
+    hostname: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana_data:/var/lib/grafana
   prometheus:
     image: prom/prometheus:latest
+    hostname: prometheus
     ports:
       - "9090:9090"
     volumes:
       - ./prometheus:/etc/prometheus
   api:
     image: dice
+    hostname: dice-api
     ports:
       - "5001:5000"
       - "8000:8000"
