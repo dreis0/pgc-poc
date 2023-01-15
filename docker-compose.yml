@@ -14,7 +14,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./configs/prometheus_config:/etc/prometheus_config
+      - ./configs/prometheus_config:/etc/prometheus
 
   otel_collector:
     image: otel/opentelemetry-collector:latest
