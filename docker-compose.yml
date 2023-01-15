@@ -14,7 +14,31 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus:/etc/prometheus
+      - ./configs/prometheus_config:/etc/prometheus_config
+
+  otel_collector:
+    image: otel/opentelemetry-collector:latest
+    hostname: otel_collector
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./configs/otel_config/otel-collector-config.yml:/etc/otel-collector-config.yaml
+    ports:
+      - "4318:4317"
+      - "5555:5555"
+      - "6666:6666"
+
+  tempo:
+    image: grafana/tempo:latest
+    command: [ "-search.enabled=true", "-config.file=/etc/tempo.yaml" ]
+    hostname: tempo
+    volumes:
+      - ./configs/tempo_config/tempo.yaml:/etc/tempo.yaml
+      - ./configs/tempo_config/overrides.yaml:/etc/overrides.yaml
+      - ./tempo_data:/tmp/tempo
+    ports:
+      - "3200:3200"
+      - "4317:4317"
+
   api:
     image: dice
     hostname: dice-api

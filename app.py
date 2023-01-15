@@ -7,7 +7,9 @@ from prometheus_client import start_http_server
 
 from opentelemetry.exporter.prometheus import PrometheusMetricReader
 from opentelemetry.sdk.metrics import MeterProvider
-from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 
 app = Flask(__name__)
@@ -22,6 +24,12 @@ resource = Resource(attributes={
 reader = PrometheusMetricReader()
 provider = MeterProvider(resource=resource, metric_readers=[reader])
 metrics.set_meter_provider(provider)
+
+provider = TracerProvider(resource=resource)
+processor = BatchSpanProcessor(OTLPSpanExporter(endpoint="http://otel_collector:4317"))
+provider.add_span_processor(processor)
+trace.set_tracer_provider(provider)
+
 
 tracer = trace.get_tracer(__name__)
 # Acquire a meter.

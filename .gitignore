@@ -10,3 +10,5 @@ lib/
 bin/
 
 grafana_data/
+
+tempo_data/

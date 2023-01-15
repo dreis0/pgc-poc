@@ -9,9 +9,11 @@ RUN pip3 install opentelemetry-distro
 RUN pip3 install opentelemetry-exporter-otlp
 RUN pip3 install opentelemetry-exporter-prometheus
 RUN pip3 install prometheus-client
+RUN pip3 install opentelemetry-exporter-otlp-proto-grpc
 
 
 RUN opentelemetry-bootstrap -a install
 
 COPY . .
 CMD ["flask", "--app", "app", "run", "--host", "0.0.0.0"]
+# CMD ["opentelemetry-instrument", "flask", "run"]

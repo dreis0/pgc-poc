@@ -1,20 +1,23 @@
-# /tmp/otel-collector-config.yaml
+# /otel_config/otel-collector-config.yml
 receivers:
   otlp:
     protocols:
       grpc:
+
 exporters:
   logging:
     loglevel: debug
+  otlp:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+
 processors:
   batch:
+
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [logging]
       processors: [batch]
-    metrics:
-      receivers: [otlp]
-      exporters: [logging]
-      processors: [batch]
+      exporters: [logging, otlp]
