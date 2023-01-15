@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+  api:
+    image: dice
+    ports:
+      - "5001:5000"
+      - "8000:8000"
