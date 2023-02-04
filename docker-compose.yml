@@ -23,7 +23,7 @@ services:
     hostname: otel_collector
     command: [ "--config=/etc/otel-collector-config.yaml" ]
     volumes:
-      - ./configs/otel_config/otel-collector-config.yml:/etc/otel-collector-config.yaml
+      - ./config/otel-collector-config.yml:/etc/otel-collector-config.yaml
     ports:
       - "4318:4317"
       - "5555:5555"
@@ -34,9 +34,9 @@ services:
     command: [ "-search.enabled=true", "-config.file=/etc/tempo.yaml" ]
     hostname: tempo
     volumes:
-      - ./configs/tempo_config/tempo.yaml:/etc/tempo.yaml
-      - ./configs/tempo_config/overrides.yaml:/etc/overrides.yaml
-      - ./tempo_data:/tmp/tempo
+      - ./config/tempo.yaml:/etc/tempo.yaml
+      - ./config/overrides.yaml:/etc/overrides.yaml
+      - ~/Documents/Repos/ufabc/pgc/Volumes/tempo:/tmp/tempo
     ports:
       - "3200:3200"
       - "4317:4317"
@@ -46,7 +46,8 @@ services:
     hostname: loki
     command: ["-config.file=/mnt/config/loki-config.yaml"]
     volumes:
-      - ./configs/loki_config/loki-config.yaml:/mnt/config/loki-config.yaml
+      - ./config/loki-config.yaml:/mnt/config/loki-config.yaml
+      - ~/Documents/Repos/ufabc/pgc/Volumes/loki:/var/lib/grafana
     ports:
       - "3100:3100"
 

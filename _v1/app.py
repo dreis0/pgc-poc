@@ -47,7 +47,7 @@ set_logger_provider(logger_provider)
 
 exporter = OTLPLogExporter(endpoint="http://otel_collector:4317", insecure=True)
 logger_provider.add_log_record_processor(BatchLogRecordProcessor(exporter))
-handler = LoggingHandler(level=logging.NOTSET, logger_provider=logger_provider)
+handler = LoggingHandler(level="DEBUG", logger_provider=logger_provider)
 
 # Attach OTLP handler to root logger
 logging.getLogger().addHandler(handler)
