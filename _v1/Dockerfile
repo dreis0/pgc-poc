@@ -10,7 +10,7 @@ RUN pip3 install opentelemetry-exporter-otlp
 RUN pip3 install opentelemetry-exporter-prometheus
 RUN pip3 install prometheus-client
 RUN pip3 install opentelemetry-exporter-otlp-proto-grpc
-
+RUN pip3 install opentelemetry-instrumentation-flask
 
 RUN opentelemetry-bootstrap -a install
 

@@ -54,3 +54,6 @@ services:
     ports:
       - "5001:5000"
       - "8000:8000"
+    environment:
+      - OTEL_PYTHON_LOG_CORRELATION=true
+      - OTEL_PYTHON_LOG_FORMAT=true

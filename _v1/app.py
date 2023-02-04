@@ -8,6 +8,7 @@ from opentelemetry._logs import set_logger_provider
 from random import randint
 from flask import Flask, request
 from prometheus_client import start_http_server
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
 
 from opentelemetry.exporter.prometheus import PrometheusMetricReader
 from opentelemetry.sdk.metrics import MeterProvider
@@ -64,6 +65,8 @@ roll_counter = meter.create_counter(
 # Start Prometheus client
 start_http_server(port=8000, addr="0.0.0.0")
 
+# Add open telemetry instrumentation to flask
+FlaskInstrumentor().instrument_app(app)
 
 @app.route("/rolldice")
 def roll_dice():
