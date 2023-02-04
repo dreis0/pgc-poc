@@ -1,0 +1,7 @@
+flask
+opentelemetry-distro
+opentelemetry-exporter-otlp
+opentelemetry-exporter-prometheus
+prometheus-client
+opentelemetry-exporter-otlp-proto-grpc
+opentelemetry-instrumentation-flask
