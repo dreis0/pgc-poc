@@ -3,6 +3,7 @@ from flask import Flask
 from routes import roll
 from observability import metrics, tracing, logging
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
 
 app = Flask(__name__)
 
@@ -15,7 +16,7 @@ def configure():
     app.logger.setLevel("DEBUG")
 
     app.logger.info("Configuring app")
-
+    FlaskInstrumentor().instrument_app(app)
     # register routes
     app.register_blueprint(roll.endpoint)
 
@@ -23,6 +24,7 @@ def configure():
     metrics.MetricsMiddleware(app)
 
     tracing.configure_tracing("http://otel_collector:4317", resource)
+
     logging.configure_logging(app, "http://otel_collector:4317", resource)
 
 
