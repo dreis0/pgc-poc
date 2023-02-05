@@ -1,4 +1,5 @@
 from flask import Flask
+
 from routes import roll
 from observability import metrics, tracing, logging
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
@@ -19,6 +20,8 @@ def configure():
     app.register_blueprint(roll.endpoint)
 
     metrics.configure_metrics(8000, resource)
+    metrics.MetricsMiddleware(app)
+
     tracing.configure_tracing("http://otel_collector:4317", resource)
     logging.configure_logging(app, "http://otel_collector:4317", resource)
 
