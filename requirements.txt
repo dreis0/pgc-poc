@@ -5,3 +5,8 @@ opentelemetry-exporter-prometheus
 prometheus-client
 opentelemetry-exporter-otlp-proto-grpc
 opentelemetry-instrumentation-flask
+Flask-SQLAlchemy
+psycopg2-binary
+bcrypt
+pyjwt
+opentelemetry-instrumentation-sqlalchemy

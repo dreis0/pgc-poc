@@ -44,7 +44,7 @@ services:
   loki:
     image: grafana/loki:latest
     hostname: loki
-    command: ["-config.file=/mnt/config/loki-config.yaml"]
+    command: [ "-config.file=/mnt/config/loki-config.yaml" ]
     volumes:
       - ./config/loki-config.yaml:/mnt/config/loki-config.yaml
       - ~/Documents/Repos/ufabc/pgc/Volumes/loki:/var/lib/grafana
@@ -55,8 +55,22 @@ services:
     image: dice
     hostname: dice-api
     ports:
-      - "5001:5000"
+      - "5001:5001"
       - "8000:8000"
     environment:
       - OTEL_PYTHON_LOG_CORRELATION=true
-      - OTEL_PYTHON_LOG_FORMAT=true
+      - OTEL_PYTHON_LOG_LEVEL=DEBUG
+      - OTEL_PYTHON_LOG_FORMAT=json
+      - RUNNING_ON_CONTAINER=true
+
+  postgres:
+    image: postgres:latest
+    hostname: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=dice
+    volumes:
+      - ~/Documents/Repos/ufabc/pgc/Volumes/postgres:/var/lib/postgresql/data
