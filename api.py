@@ -34,6 +34,7 @@ def configure():
 
     metrics.configure_metrics(8000, resource)
     metrics.MetricsMiddleware(app)
+    metrics.DatabaseMetrics()
 
     tracing.configure_tracing("http://otel_collector:4317", resource)
 
