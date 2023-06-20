@@ -7,16 +7,17 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ~/Documents/Repos/ufabc/pgc/Volumes/grafana:/var/lib/grafana
+      - ~/Repos/PGC/volumes/grafana:/var/lib/grafana
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.44.0
     hostname: prometheus
+    command: ["--web.enable-remote-write-receiver", "--config.file=/etc/prometheus/prometheus.yml"]
     ports:
       - "9090:9090"
     volumes:
       - ./config:/etc/prometheus
-      - ~/Documents/Repos/ufabc/pgc/Volumes/prometheus:/prometheus
+      - ~/Repos/PGC/volumes/prometheus:/prometheus
 
   otel_collector:
     image: otel/opentelemetry-collector-contrib:latest
@@ -31,12 +32,11 @@ services:
 
   tempo:
     image: grafana/tempo:latest
-    command: [ "-search.enabled=true", "-config.file=/etc/tempo.yaml" ]
+    command: [ "-config.file=/etc/tempo.yaml" ]
     hostname: tempo
     volumes:
       - ./config/tempo.yaml:/etc/tempo.yaml
-      - ./config/overrides.yaml:/etc/overrides.yaml
-      - ~/Documents/Repos/ufabc/pgc/Volumes/tempo:/tmp/tempo
+      - ~/Repos/PGC/volumes/tempo:/tmp/tempo
     ports:
       - "3200:3200"
       - "4317:4317"
@@ -47,21 +47,50 @@ services:
     command: [ "-config.file=/mnt/config/loki-config.yaml" ]
     volumes:
       - ./config/loki-config.yaml:/mnt/config/loki-config.yaml
-      - ~/Documents/Repos/ufabc/pgc/Volumes/loki:/var/lib/grafana
+      - ~/Repos/PGC/volumes/loki:/var/lib/grafana
     ports:
       - "3100:3100"
 
-  api:
-    image: dice
-    hostname: dice-api
+  # api:
+  #   image: dice
+  #   hostname: dice-api
+  #   depends_on: 
+  #     - postgres
+  #   ports:
+  #     - "5001:5001"
+  #     - "8000:8000"
+  #   environment:
+  #     - OTEL_PYTHON_LOG_CORRELATION=true
+  #     - OTEL_PYTHON_LOG_LEVEL=DEBUG
+  #     - OTEL_PYTHON_LOG_FORMAT=json
+  #     - RUNNING_ON_CONTAINER=true
+  
+  email-api:
+    image: email:v2.0.0
+    hostname: email-api
+    depends_on: 
+      postgres:
+        condition: service_healthy
     ports:
-      - "5001:5001"
-      - "8000:8000"
+      - "5002:5001"
+      - "8001:8000"
     environment:
-      - OTEL_PYTHON_LOG_CORRELATION=true
-      - OTEL_PYTHON_LOG_LEVEL=DEBUG
-      - OTEL_PYTHON_LOG_FORMAT=json
-      - RUNNING_ON_CONTAINER=true
+      - ENV=development
+      - DATABASE_HOST=postgres
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=dice
+      - COLLECTOR_URL=otel_collector:4317
+      - PROMETHEUS_PORT=8000
+      - PORT=5001
+      - SMTP_SENDER=migueldreis01@gmail.com
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_PASSWORD=evcrjetkkolkzjdu
+      - AUTH_EXPIRATION=172800
+      - AUTH_SECRET=wn9AmoDNnqGSHi38poXA
+      - AUTH_ADMIN_KEY=5JU3dD4AJuKXGRpAgVKe
 
   postgres:
     image: postgres:latest
@@ -73,4 +102,9 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=dice
     volumes:
-      - ~/Documents/Repos/ufabc/pgc/Volumes/postgres:/var/lib/postgresql/data
+      - ~/Repos/PGC/volumes/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "myuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
